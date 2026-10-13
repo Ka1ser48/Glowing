@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html lang="ru" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GlowUp Hub — Прокачай себя</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#f0fdf4',
+              100: '#dcfce7',
+              400: '#4ade80',
+              500: '#22c55e',
+              600: '#16a34a',
+              700: '#15803d',
+              900: '#14532d'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: #0f172a; }
+    ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #475569; }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans antialiased selection:bg-brand-500 selection:text-slate-950">
+
+  <!-- Шапка -->
+  <header class="sticky top-0 z-40 bg-slate-900/80 backdrop-blur-md border-b border-slate-800">
+    <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-3 cursor-pointer" onclick="switchTab('profile')">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-500 to-emerald-700 flex items-center justify-center font-bold text-slate-950 text-xl shadow-lg shadow-brand-500/20">✨</div>
+        <div>
+          <span class="font-extrabold text-lg tracking-tight bg-gradient-to-r from-white via-slate-200 to-brand-500 bg-clip-text text-transparent">GlowUp Hub</span>
+          <span class="block text-[10px] text-slate-400 font-medium -mt-1">Level Up Your Life</span>
+        </div>
+      </div>
+
+      <nav class="hidden md:flex items-center gap-1 bg-slate-950/60 p-1.5 rounded-xl border border-slate-800/80">
+        <button onclick="switchTab('profile')" id="nav-profile" class="nav-btn px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2"><i data-lucide="user" class="w-4 h-4"></i> Профиль</button>
+        <button onclick="switchTab('body')" id="nav-body" class="nav-btn px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2"><i data-lucide="dumbbell" class="w-4 h-4"></i> Body</button>
+        <button onclick="switchTab('mind')" id="nav-mind" class="nav-btn px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2"><i data-lucide="brain" class="w-4 h-4"></i> Mind</button>
+        <button onclick="switchTab('focus')" id="nav-focus" class="nav-btn px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2"><i data-lucide="target" class="w-4 h-4"></i> Focus</button>
+        <button onclick="switchTab('style')" id="nav-style" class="nav-btn px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2"><i data-lucide="sparkles" class="w-4 h-4"></i> Style</button>
+      </nav>
+
+      <div class="flex items-center gap-3">
+        <div class="bg-slate-800/80 px-3 py-1.5 rounded-lg border border-slate-700/60 flex items-center gap-2 text-xs font-semibold">
+          <span class="text-amber-400 flex items-center gap-1">⚡ <span id="header-streak">0</span> дн</span>
+          <span class="text-slate-500">|</span>
+          <span class="text-brand-500 flex items-center gap-1">💎 <span id="header-xp">0</span> XP</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="flex-1 max-w-6xl w-full mx-auto p-4 md:p-6 mb-20 md:mb-8">
+
+    <!-- ПРОФИЛЬ -->
+    <section id="tab-profile" class="tab-content space-y-6">
+
+      <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-slate-900 to-slate-950 border border-slate-800 p-6 md:p-8 shadow-2xl">
+        <div class="relative z-10 grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
+
+          <div class="flex items-center gap-5">
+            <div class="relative">
+              <div class="w-20 h-20 md:w-24 md:h-24 rounded-2xl bg-gradient-to-tr from-brand-600 via-emerald-500 to-teal-400 p-1 shadow-xl shadow-brand-500/20">
+                <div class="w-full h-full bg-slate-900 rounded-[14px] flex flex-col items-center justify-center">
+                  <span class="text-2xl md:text-3xl font-black text-brand-500" id="user-level-num">1</span>
+                  <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Уровень</span>
+                </div>
+              </div>
+              <span class="absolute -bottom-2 -right-2 bg-amber-500 text-slate-950 text-[10px] font-black px-2 py-0.5 rounded-full shadow-md" id="user-rank-badge">Ранг I</span>
+            </div>
+            <div>
+              <div class="flex items-center gap-2">
+                <h1 class="text-xl md:text-2xl font-bold text-white" id="user-title">Novice</h1>
+                <button onclick="openLevelsModal()" class="text-xs text-slate-400 hover:text-brand-500 underline transition-colors">карта уровней</button>
+              </div>
+              <p class="text-xs text-slate-400 mt-1" id="user-rank-title">Начало пути</p>
+              <div class="mt-2 flex items-center gap-2 text-xs text-slate-300">
+                <span class="inline-flex items-center gap-1 bg-slate-800/80 px-2.5 py-1 rounded-md border border-slate-700/50">
+                  🔥 Серия: <strong class="text-amber-400" id="profile-streak">0 дней</strong>
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="md:col-span-2 space-y-3 bg-slate-950/40 p-4 rounded-2xl border border-slate-800/50">
+            <div class="flex justify-between items-end text-sm">
+              <div>
+                <span class="text-slate-400 text-xs block">Прогресс до следующего уровня</span>
+                <span class="font-bold text-white text-base"><span id="user-current-xp">0</span> / <span id="user-next-xp">100</span> XP</span>
+              </div>
+              <span class="text-xs font-semibold text-brand-500 bg-brand-500/10 px-2.5 py-1 rounded-full" id="xp-percentage">0%</span>
+            </div>
+            <div class="w-full h-4 bg-slate-800 rounded-full overflow-hidden p-0.5 border border-slate-700/50 relative">
+              <div id="xp-progress-bar" class="h-full bg-gradient-to-r from-brand-600 via-brand-500 to-emerald-400 rounded-full transition-all duration-500 ease-out" style="width: 0%"></div>
+            </div>
+            <div class="flex justify-between items-center text-[11px] text-slate-400 pt-1">
+              <span>До ур. <span id="next-level-num">2</span> осталось: <strong class="text-slate-200" id="xp-needed">100 XP</strong></span>
+              <span>Всего заработано: <strong class="text-brand-400" id="total-xp-earned">0 XP</strong></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Тест -->
+      <div class="rounded-3xl bg-gradient-to-r from-indigo-950/60 via-slate-900 to-slate-900 border border-indigo-500/20 p-5 md:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h2 class="text-lg font-bold text-white flex items-center gap-2">🧭 Тест: «Где мне расти?»</h2>
+          <p class="text-xs text-slate-400 mt-1">8 коротких вопросов, 1 минута. Узнай, какой раздел стоит прокачать в первую очередь.</p>
+          <p class="text-xs text-slate-500 mt-1" id="quiz-last"></p>
+        </div>
+        <button onclick="openQuiz()" class="shrink-0 bg-indigo-500 hover:bg-indigo-400 text-white font-bold px-5 py-2.5 rounded-xl transition-all text-sm">Пройти тест</button>
+      </div>
+
+      <!-- Квесты -->
+      <div class="space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <h2 class="text-xl font-bold flex items-center gap-2 text-white">
+              <i data-lucide="check-circle-2" class="w-6 h-6 text-brand-500"></i> Ежедневные Квесты
+            </h2>
+            <p class="text-xs text-slate-400">Квесты обновляются каждый день. Сегодня выполнено: <strong class="text-brand-400" id="today-count">0 / 0</strong></p>
+          </div>
+
+          <div class="flex flex-wrap gap-1.5 bg-slate-900 p-1 rounded-xl border border-slate-800 text-xs">
+            <button onclick="filterQuests('all')" class="quest-filter-btn px-3 py-1.5 rounded-lg font-medium transition-all bg-brand-500 text-slate-950 font-semibold" data-category="all">Все</button>
+            <button onclick="filterQuests('body')" class="quest-filter-btn px-3 py-1.5 rounded-lg font-medium text-slate-400 hover:text-white transition-all" data-category="body">Body</button>
+            <button onclick="filterQuests('mind')" class="quest-filter-btn px-3 py-1.5 rounded-lg font-medium text-slate-400 hover:text-white transition-all" data-category="mind">Mind</button>
+            <button onclick="filterQuests('focus')" class="quest-filter-btn px-3 py-1.5 rounded-lg font-medium text-slate-400 hover:text-white transition-all" data-category="focus">Focus</button>
+            <button onclick="filterQuests('style')" class="quest-filter-btn px-3 py-1.5 rounded-lg font-medium text-slate-400 hover:text-white transition-all" data-category="style">Style</button>
+          </div>
+        </div>
+
+        <div id="quests-container" class="grid grid-cols-1 md:grid-cols-2 gap-3.5"></div>
+      </div>
+
+      <p class="text-[11px] text-slate-500 text-center pt-2">
+        Проект носит информационный характер и не заменяет консультацию врача. Если есть проблемы со здоровьем, сначала посоветуйся со взрослыми и специалистом.
+      </p>
+    </section>
+
+    <!-- BODY -->
+    <section id="tab-body" class="tab-content hidden space-y-6">
+      <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 md:p-8">
+        <div class="flex items-center gap-3 text-emerald-400 mb-2">
+          <i data-lucide="dumbbell" class="w-8 h-8"></i>
+          <span class="text-xs font-bold uppercase tracking-wider bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">Раздел 1: Физическая Форма</span>
+        </div>
+        <h1 class="text-2xl md:text-3xl font-extrabold text-white">Тело, Осанка и Энергия</h1>
+        <p class="text-slate-400 text-sm mt-2 max-w-2xl">Твое тело — это фундамент. От осанки зависит уверенность в себе, а от базовой активности — уровень энергии в учебе и повседневной жизни. ВОЗ рекомендует подросткам в среднем около 60 минут активности в день; если пока меньше, начинай с малого и постепенно добавляй (источники на странице «О проекте»).</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-md">Осанка & Спина</span>
+            <span class="text-xs text-slate-500">5 минут в день</span>
+          </div>
+          <h3 class="text-lg font-bold text-white">Разминка для ровной спины</h3>
+          <p class="text-xs text-slate-300 leading-relaxed">Долгое сидение за партой и телефоном сутулит плечи. Делай эти 3 простых упражнения каждый день:</p>
+          <ul class="text-xs text-slate-300 space-y-2 list-disc list-inside bg-slate-950/50 p-3 rounded-xl border border-slate-800">
+            <li><strong>Кошка-корова:</strong> 10 медленных прогибов и округлений спины стоя на четвереньках.</li>
+            <li><strong>Ангелы у стены:</strong> прижмись спиной и затылком к стене, согни руки под 90° и двигай вверх-вниз 15 раз.</li>
+            <li><strong>Подъём корпуса лёжа на животе:</strong> поднимай грудь на 2 секунды (12 повторений), без резких рывков.</li>
+          </ul>
+        </div>
+
+        <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-blue-400 bg-blue-500/10 px-2.5 py-1 rounded-md">Гидратация</span>
+            <span class="text-xs text-slate-500">Пей в течение дня</span>
+          </div>
+          <h3 class="text-lg font-bold text-white">Водный Баланс</h3>
+          <p class="text-xs text-slate-300 leading-relaxed">Недостаток воды может вызывать усталость, головную боль и сухость кожи. Норма у каждого своя, ориентируйся на жажду и цвет мочи (светлый — хорошо).</p>
+          <div class="bg-slate-950/50 p-3 rounded-xl border border-slate-800 text-xs space-y-2 text-slate-300">
+            <p>💡 <strong>Лайфхак:</strong> выпивай стакан воды после пробуждения — это простая и полезная привычка.</p>
+            <p>Носи с собой в школу бутылку для воды и делай пару глотков на каждой перемене.</p>
+          </div>
+        </div>
+
+        <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-purple-400 bg-purple-500/10 px-2.5 py-1 rounded-md">Силовая база</span>
+            <span class="text-xs text-slate-500">Без инвентаря</span>
+          </div>
+          <h3 class="text-lg font-bold text-white">Короткий домашний комплекс</h3>
+          <p class="text-xs text-slate-300 leading-relaxed">Дорогой абонемент не нужен. 10–15 минут упражнений со своим весом 3–4 раза в неделю хорошо подойдут для старта. Начни с лёгкого варианта и не гонись за количеством.</p>
+          <div class="bg-slate-950/50 p-3 rounded-xl border border-slate-800 text-xs space-y-1.5 text-slate-300">
+            <div class="flex justify-between"><span>Отжимания (обычные/с колен):</span><strong>3 подх. x 10-15</strong></div>
+            <div class="flex justify-between"><span>Приседания:</span><strong>3 подх. x 20</strong></div>
+            <div class="flex justify-between"><span>Планка:</span><strong>3 подх. x 30-45 сек</strong></div>
+          </div>
+        </div>
+
+        <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-amber-400 bg-amber-500/10 px-2.5 py-1 rounded-md">Тонус</span>
+            <span class="text-xs text-slate-500">Утренний бодряк</span>
+          </div>
+          <h3 class="text-lg font-bold text-white">Прохладный душ в конце</h3>
+          <p class="text-xs text-slate-300 leading-relaxed">Многие замечают, что короткий прохладный душ бодрит и помогает проснуться.</p>
+          <p class="text-xs text-slate-400 bg-slate-950/50 p-3 rounded-xl border border-slate-800">
+            Начни с обычного тёплого душа, а в конце сделай воду чуть прохладнее на 15–30 секунд. Холодную воду не нужно делать экстремальной. Если плохо себя чувствуешь или есть проблемы со здоровьем, пропусти.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- MIND -->
+    <section id="tab-mind" class="tab-content hidden space-y-6">
+      <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 md:p-8">
+        <div class="flex items-center gap-3 text-purple-400 mb-2">
+          <i data-lucide="brain" class="w-8 h-8"></i>
+          <span class="text-xs font-bold uppercase tracking-wider bg-purple-500/10 px-3 py-1 rounded-full border border-purple-500/20">Раздел 2: Ментальное Здоровье</span>
+        </div>
+        <h1 class="text-2xl md:text-3xl font-extrabold text-white">Разум, Сон и Внутреннее Спокойствие</h1>
+        <p class="text-slate-400 text-sm mt-2 max-w-2xl">Настоящий Glow Up происходит изнутри. Наведи порядок в мыслях, выстрой режим сна и учись справляться с тревогой.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 space-y-3">
+          <span class="text-xs font-bold text-indigo-400 bg-indigo-500/10 px-2.5 py-1 rounded-md">Качество Сна</span>
+          <h3 class="text-lg font-bold text-white">Гигиена Сна</h3>
+          <p class="text-xs text-slate-300 leading-relaxed">Подросткам обычно рекомендуют спать 8–10 часов. Без нормального сна страдают внимание, память и настроение.</p>
+          <ul class="text-xs text-slate-300 space-y-2 list-disc list-inside bg-slate-950/50 p-3 rounded-xl border border-slate-800">
+            <li><strong>Правило 45 минут:</strong> отложи телефон за 45 минут до сна. Экран мешает засыпанию.</li>
+            <li><strong>Темнота и прохлада:</strong> проветри комнату перед сном (около +18...+20°C).</li>
+            <li><strong>Одно и то же время:</strong> старайся ложиться и вставать примерно в одни часы, даже в выходные.</li>
+          </ul>
+        </div>
+
+        <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 space-y-3">
+          <span class="text-xs font-bold text-rose-400 bg-rose-500/10 px-2.5 py-1 rounded-md">Борьба со стрессом</span>
+          <h3 class="text-lg font-bold text-white">Техника Brain Dump (Выгрузка Мыслей)</h3>
+          <p class="text-xs text-slate-300 leading-relaxed">Если перед сном крутятся тревожные мысли о школе, экзаменах или отношениях, выпиши их.</p>
+          <div class="bg-slate-950/50 p-3 rounded-xl border border-slate-800 text-xs text-slate-300 space-y-1">
+            <p>📝 Возьми тетрадь и напиши всё, что беспокоит. Когда мысли на бумаге, голове проще расслабиться. Рядом можно написать, что ты сделаешь завтра.</p>
+          </div>
+        </div>
+
+        <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 space-y-3">
+          <span class="text-xs font-bold text-amber-400 bg-amber-500/10 px-2.5 py-1 rounded-md">Язык Тела</span>
+          <h3 class="text-lg font-bold text-white">Уверенный Взгляд и Осанка</h3>
+          <p class="text-xs text-slate-300 leading-relaxed">Поза влияет на то, как тебя воспринимают окружающие, а многим помогает и чувствовать себя увереннее.</p>
+          <div class="bg-slate-950/50 p-3 rounded-xl border border-slate-800 text-xs text-slate-300 space-y-1.5">
+            <p>👁️ Держи подбородок параллельно полу при ходьбе.</p>
+            <p>При разговоре удерживай зрительный контакт 3–4 секунды, не опускай глаза сразу вниз.</p>
+          </div>
+        </div>
+
+        <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 space-y-3">
+          <span class="text-xs font-bold text-teal-400 bg-teal-500/10 px-2.5 py-1 rounded-md">Цифровой Баланс</span>
+          <h3 class="text-lg font-bold text-white">Digital Detox на 1 час</h3>
+          <p class="text-xs text-slate-300 leading-relaxed">Бесконечный скроллинг соцсетей отвлекает и съедает время, которое можно потратить на себя.</p>
+          <p class="text-xs text-slate-400 bg-slate-950/50 p-3 rounded-xl border border-slate-800">
+            Выдели 1 час в день (например, на прогулку или разминку), когда телефон лежит на режиме «Не беспокоить».
+          </p>
+        </div>
+
+        <div class="md:col-span-2 bg-slate-900/60 border border-slate-800 rounded-2xl p-5 space-y-3">
+          <span class="text-xs font-bold text-pink-400 bg-pink-500/10 px-2.5 py-1 rounded-md">Эмоции</span>
+          <h3 class="text-lg font-bold text-white">Благодарность и дневник</h3>
+          <p class="text-xs text-slate-300 leading-relaxed">Каждый вечер записывай 3 вещи, за которые ты благодарен сегодня, и одну вещь, которую сделал хорошо. Это занимает 2 минуты и помогает замечать хорошее.</p>
+          <p class="text-xs text-slate-400 bg-slate-950/50 p-3 rounded-xl border border-slate-800">
+            Если тревога или плохое настроение держатся долго, поговори с родителями, школьным психологом или другим взрослым, которому доверяешь.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOCUS -->
+    <section id="tab-focus" class="tab-content hidden space-y-6">
+      <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 md:p-8">
+        <div class="flex items-center gap-3 text-blue-400 mb-2">
+          <i data-lucide="target" class="w-8 h-8"></i>
+          <span class="text-xs font-bold uppercase tracking-wider bg-blue-500/10 px-3 py-1 rounded-full border border-blue-500/20">Раздел 3: Учеба и Навыки</span>
+        </div>
+        <h1 class="text-2xl md:text-3xl font-extrabold text-white">Фокус, Тайм-Менеджмент и Интеллект</h1>
+        <p class="text-slate-400 text-sm mt-2 max-w-2xl">Учись умнее, а не дольше. Используй эффективные техники фокуса и качай логическое мышление.</p>
+      </div>
+
+      <!-- Pomodoro -->
+      <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 md:p-8 text-center space-y-4">
+        <div class="inline-flex items-center gap-2 bg-blue-500/10 text-blue-400 px-3 py-1 rounded-full text-xs font-bold border border-blue-500/20">
+          ⏱️ Pomodoro Таймер
+        </div>
+        <h2 class="text-xl font-bold text-white" id="timer-mode-label">Сфокусируйся на учебе</h2>
+        <div class="text-5xl md:text-6xl font-black tracking-tight text-brand-500 font-mono py-2" id="timer-display">25:00</div>
+        <div class="flex flex-wrap justify-center items-center gap-3">
+          <button onclick="startTimer()" id="btn-timer-start" class="bg-brand-500 hover:bg-brand-600 text-slate-950 font-bold px-6 py-2.5 rounded-xl transition-all shadow-lg shadow-brand-500/20 flex items-center gap-2 text-sm">
+            <i data-lucide="play" class="w-4 h-4"></i> Старт
+          </button>
+          <button onclick="pauseTimer()" id="btn-timer-pause" class="bg-slate-800 hover:bg-slate-700 text-white font-bold px-5 py-2.5 rounded-xl transition-all border border-slate-700 text-sm hidden">Пауза</button>
+          <button onclick="resetTimer(25)" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-4 py-2.5 rounded-xl transition-all border border-slate-700 text-sm">25 мин</button>
+          <button onclick="resetTimer(5)" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-4 py-2.5 rounded-xl transition-all border border-slate-700 text-sm">5 мин (Отдых)</button>
+        </div>
+        <p class="text-xs text-slate-400">За каждые полные 25 минут фокуса: <strong class="text-brand-400">+10 XP</strong> (до 4 раз в день). Сегодня: <strong class="text-brand-400" id="pomo-count">0 / 4</strong></p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 space-y-3">
+          <span class="text-xs font-bold text-blue-400 bg-blue-500/10 px-2.5 py-1 rounded-md">Методика обучения</span>
+          <h3 class="text-lg font-bold text-white">Техника Фейнмана</h3>
+          <p class="text-xs text-slate-300 leading-relaxed">Хороший способ понять сложную тему (по физике, математике или языкам) — попробовать объяснить ее простыми словами, как будто младшему школьнику.</p>
+          <p class="text-xs text-slate-400 bg-slate-950/50 p-3 rounded-xl border border-slate-800">
+            Если ты запинаешься или используешь сложные термины, значит, в этом месте у тебя пробел. Вернись к конспекту.
+          </p>
+        </div>
+
+        <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 space-y-3">
+          <span class="text-xs font-bold text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-md">Тренажер ума</span>
+          <h3 class="text-lg font-bold text-white">Интеллектуальная Зарядка</h3>
+          <p class="text-xs text-slate-300 leading-relaxed">Небольшая регулярная нагрузка для ума лучше, чем редкие марафоны. Хватит 15 минут в день.</p>
+          <ul class="text-xs text-slate-300 space-y-1.5 list-disc list-inside bg-slate-950/50 p-3 rounded-xl border border-slate-800">
+            <li>Реши 3–5 тактических задач в шахматах.</li>
+            <li>Выучи 5 новых иностранных слов.</li>
+            <li>Прочитай 15 страниц книги.</li>
+          </ul>
+        </div>
+
+        <div class="md:col-span-2 bg-slate-900/60 border border-slate-800 rounded-2xl p-5 space-y-3">
+          <span class="text-xs font-bold text-cyan-400 bg-cyan-500/10 px-2.5 py-1 rounded-md">Планирование</span>
+          <h3 class="text-lg font-bold text-white">Правило 3 главных задач</h3>
+          <p class="text-xs text-slate-300 leading-relaxed">Вечером выбери 3 самые важные задачи на завтра и запиши их. Утром начни с самой сложной. Так список дел не превращается в хаос.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- STYLE -->
+    <section id="tab-style" class="tab-content hidden space-y-6">
+      <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 md:p-8">
+        <div class="flex items-center gap-3 text-amber-400 mb-2">
+          <i data-lucide="sparkles" class="w-8 h-8"></i>
+          <span class="text-xs font-bold uppercase tracking-wider bg-amber-500/10 px-3 py-1 rounded-full border border-amber-500/20">Раздел 4: Внешний Вид</span>
+        </div>
+        <h1 class="text-2xl md:text-3xl font-extrabold text-white">Стиль, Уход за Кожей и Опрятность</h1>
+        <p class="text-slate-400 text-sm mt-2 max-w-2xl">Опрятный внешний вид помогает чувствовать себя увереннее в общении. Главное — чистота и комфорт, а не дорогие вещи.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 space-y-3">
+          <span class="text-xs font-bold text-amber-400 bg-amber-500/10 px-2.5 py-1 rounded-md">Skincare / Уход</span>
+          <h3 class="text-lg font-bold text-white">Базовый Уход за Кожей Лица</h3>
+          <p class="text-xs text-slate-300 leading-relaxed">В подростковом возрасте из-за гормонов часто бывают высыпания. Для начала достаточно 2 базовых средств:</p>
+          <ul class="text-xs text-slate-300 space-y-2 list-disc list-inside bg-slate-950/50 p-3 rounded-xl border border-slate-800">
+            <li><strong>Мягкая пенка/гель для умывания:</strong> утром и вечером.</li>
+            <li><strong>Лёгкий увлажняющий крем:</strong> чтобы кожа не шелушилась.</li>
+            <li>Не выдавливай прыщи. Если высыпаний много, обратись к дерматологу.</li>
+          </ul>
+        </div>
+
+        <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 space-y-3">
+          <span class="text-xs font-bold text-blue-400 bg-blue-500/10 px-2.5 py-1 rounded-md">Гардероб</span>
+          <h3 class="text-lg font-bold text-white">Базовый Гардероб и Обувь</h3>
+          <p class="text-xs text-slate-300 leading-relaxed">Чтобы выглядеть опрятно, не нужны дорогие бренды. Главное — посадка по размеру и чистые вещи.</p>
+          <div class="bg-slate-950/50 p-3 rounded-xl border border-slate-800 text-xs text-slate-300 space-y-1.5">
+            <p>👟 <strong>Обувь:</strong> протирай кроссовки после возвращения с улицы. Чистая обувь сразу меняет общий вид.</p>
+            <p>👕 <strong>Цвета:</strong> чёрный, белый, серый, бежевый и тёмно-синий легко сочетаются между собой.</p>
+          </div>
+        </div>
+
+        <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 space-y-3">
+          <span class="text-xs font-bold text-pink-400 bg-pink-500/10 px-2.5 py-1 rounded-md">Гигиена</span>
+          <h3 class="text-lg font-bold text-white">Свежесть каждый день</h3>
+          <ul class="text-xs text-slate-300 space-y-2 list-disc list-inside bg-slate-950/50 p-3 rounded-xl border border-slate-800">
+            <li>Чисти зубы утром и вечером, раз в день пользуйся зубной нитью.</li>
+            <li>Меняй одежду и носки каждый день.</li>
+            <li>Принимай душ после спорта и регулярно мой голову.</li>
+          </ul>
+        </div>
+
+        <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 space-y-3">
+          <span class="text-xs font-bold text-teal-400 bg-teal-500/10 px-2.5 py-1 rounded-md">Привычки</span>
+          <h3 class="text-lg font-bold text-white">Подготовка с вечера</h3>
+          <p class="text-xs text-slate-400 bg-slate-950/50 p-3 rounded-xl border border-slate-800">
+            Вечером собери рюкзак и приготовь одежду на завтра. Утром останется больше времени и меньше суеты.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- О ПРОЕКТЕ -->
+    <section id="tab-about" class="tab-content hidden space-y-6">
+      <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 md:p-8">
+        <div class="flex items-center gap-3 text-brand-400 mb-2">
+          <span class="text-3xl">✨</span>
+          <span class="text-xs font-bold uppercase tracking-wider bg-brand-500/10 px-3 py-1 rounded-full border border-brand-500/20">О проекте</span>
+        </div>
+        <h1 class="text-2xl md:text-3xl font-extrabold text-white">GlowUp Hub</h1>
+        <p class="text-slate-400 text-sm mt-2 max-w-2xl">Школьный проект: сайт-игра, которая помогает подросткам формировать полезные привычки через ежедневные задания, уровни и XP.</p>
+        <p class="text-xs text-slate-500 mt-3">Автор: <strong class="text-brand-400">M1rage</strong>, 10 класс</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 space-y-3">
+          <h3 class="text-lg font-bold text-white">🎯 Цель проекта</h3>
+          <p class="text-xs text-slate-300 leading-relaxed">Показать, что изменить себя можно маленькими шагами: немного движения, нормальный сон, фокус на учёбе и опрятность. Игровая механика (уровни, XP, серия дней) делает привычки интереснее, потому что виден прогресс.</p>
+        </div>
+
+        <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 space-y-3">
+          <h3 class="text-lg font-bold text-white">🕹️ Как это работает</h3>
+          <ul class="text-xs text-slate-300 space-y-2 list-disc list-inside">
+            <li><strong>Квесты:</strong> 24 задания в 4 разделах. Каждый день они обновляются.</li>
+            <li><strong>XP и уровни:</strong> за квесты и Pomodoro начисляется опыт, всего 25 уровней.</li>
+            <li><strong>Серия:</strong> считается по дням подряд, когда выполнен хотя бы один квест.</li>
+            <li><strong>Тест:</strong> «Где мне расти?» показывает слабый раздел и советует, с чего начать.</li>
+            <li><strong>Pomodoro:</strong> таймер 25/5 минут для учёбы.</li>
+          </ul>
+        </div>
+
+        <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 space-y-3">
+          <h3 class="text-lg font-bold text-white">🛠️ Технологии</h3>
+          <p class="text-xs text-slate-300 leading-relaxed">HTML, Tailwind CSS, JavaScript и иконки Lucide. Прогресс хранится только в твоём браузере (localStorage): сайт ничего не отправляет на сервер и не собирает личные данные. Если очистить данные браузера, прогресс пропадёт.</p>
+        </div>
+
+        <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 space-y-3">
+          <h3 class="text-lg font-bold text-white">⚠️ Важно знать</h3>
+          <ul class="text-xs text-slate-300 space-y-2 list-disc list-inside">
+            <li>Сайт не заменяет врача, психолога или тренера.</li>
+            <li>Тест — это подсказка, а не диагноз.</li>
+            <li>Если есть проблемы со здоровьем, сначала поговори со взрослыми и специалистом.</li>
+            <li>Если плохое настроение или тревога держатся долго, обратись к школьному психологу или близкому взрослому.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Источники -->
+      <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 md:p-8 space-y-4">
+        <div>
+          <h2 class="text-xl font-bold text-white">📚 Источники</h2>
+          <p class="text-xs text-slate-400 mt-1">На эти материалы опираются рекомендации по активности, сну, коже и фокусу.</p>
+        </div>
+
+        <div class="space-y-3">
+          <a href="https://www.ncbi.nlm.nih.gov/books/NBK566048/" target="_blank" rel="noopener noreferrer" class="block p-4 rounded-xl bg-slate-950/50 border border-slate-800 hover:border-brand-500/50 transition-all">
+            <div class="text-sm font-bold text-white">WHO — Guidelines on Physical Activity and Sedentary Behaviour (2020)</div>
+            <p class="text-xs text-slate-400 mt-1">Детям и подросткам 5–17 лет рекомендуют в среднем не менее 60 минут в день умеренной или интенсивной активности. Если пока меньше, начинать нужно с малого и постепенно увеличивать.</p>
+          </a>
+          <a href="https://www.cdc.gov/healthyschools/physicalactivity/guidelines.htm" target="_blank" rel="noopener noreferrer" class="block p-4 rounded-xl bg-slate-950/50 border border-slate-800 hover:border-brand-500/50 transition-all">
+            <div class="text-sm font-bold text-white">CDC — Physical Activity Guidelines for School-Aged Children and Adolescents</div>
+            <p class="text-xs text-slate-400 mt-1">Те же 60 минут в день, при этом силовые упражнения полезно делать минимум 3 дня в неделю.</p>
+          </a>
+          <a href="https://aasm.org/resources/pdf/pressroom/teen-sleep-duration-recommendation.pdf" target="_blank" rel="noopener noreferrer" class="block p-4 rounded-xl bg-slate-950/50 border border-slate-800 hover:border-brand-500/50 transition-all">
+            <div class="text-sm font-bold text-white">AASM — Health Advisory: Teen Sleep Duration</div>
+            <p class="text-xs text-slate-400 mt-1">Подросткам 13–18 лет рекомендуют спать 8–10 часов в сутки. Регулярный недосып связан с проблемами с вниманием и учёбой.</p>
+          </a>
+          <a href="https://kidshealth.org/CHW/en/teens/skin-tips.html" target="_blank" rel="noopener noreferrer" class="block p-4 rounded-xl bg-slate-950/50 border border-slate-800 hover:border-brand-500/50 transition-all">
+            <div class="text-sm font-bold text-white">KidsHealth — Tips for Taking Care of Your Skin (для подростков)</div>
+            <p class="text-xs text-slate-400 mt-1">Слишком частое мытьё и трение раздражают кожу. Лучше защищаться от солнца, а при проблемах обратиться к дерматологу.</p>
+          </a>
+          <a href="https://health.ucdavis.edu/news/headlines/teens-and-acne-top-tips-to-clearer-skin/2021/06" target="_blank" rel="noopener noreferrer" class="block p-4 rounded-xl bg-slate-950/50 border border-slate-800 hover:border-brand-500/50 transition-all">
+            <div class="text-sm font-bold text-white">UC Davis Health — Teens and acne: top tips to clearer skin</div>
+            <p class="text-xs text-slate-400 mt-1">Умываться стоит дважды в день мягким средством, а жёсткое трение усиливает воспаление.</p>
+          </a>
+          <a href="https://pomodorotechnique.com/" target="_blank" rel="noopener noreferrer" class="block p-4 rounded-xl bg-slate-950/50 border border-slate-800 hover:border-brand-500/50 transition-all">
+            <div class="text-sm font-bold text-white">Francesco Cirillo — The Pomodoro Technique</div>
+            <p class="text-xs text-slate-400 mt-1">Автор метода: 25-минутные рабочие интервалы с короткими перерывами.</p>
+          </a>
+        </div>
+
+        <p class="text-[11px] text-slate-500 leading-relaxed pt-2">
+          Часть советов (техника Фейнмана, Brain Dump, дневник благодарности, «правило 45 минут» без телефона перед сном, температура в комнате, правило 3 главных задач) — это практические рекомендации, которые широко используются, но не подкреплены отдельными источниками на этой странице. Их стоит воспринимать как идеи, которые можно попробовать на себе.
+        </p>
+      </div>
+
+      <div class="text-center">
+        <button onclick="switchTab('profile')" class="bg-brand-500 hover:bg-brand-600 text-slate-950 font-bold px-6 py-2.5 rounded-xl text-sm transition-all">← Вернуться к квестам</button>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="max-w-6xl w-full mx-auto px-4 pb-24 md:pb-8 text-center text-[11px] text-slate-500">
+    GlowUp Hub • автор M1rage, 10 класс •
+    <button onclick="switchTab('about')" class="underline hover:text-brand-400 transition-colors">О проекте и источники</button>
+  </footer>
+
+  <!-- Модалка уровней -->
+  <div id="levels-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-2xl w-full max-h-[85vh] flex flex-col shadow-2xl overflow-hidden">
+      <div class="p-6 border-b border-slate-800 flex justify-between items-center">
+        <div>
+          <h3 class="text-xl font-bold text-white">Карта 25 Уровней Glow Up</h3>
+          <p class="text-xs text-slate-400">Градация рангов и требуемый XP</p>
+        </div>
+        <button onclick="closeLevelsModal()" class="text-slate-400 hover:text-white p-2 rounded-lg bg-slate-800">✕</button>
+      </div>
+      <div class="p-6 overflow-y-auto space-y-3" id="modal-levels-list"></div>
+    </div>
+  </div>
+
+  <!-- Модалка теста -->
+  <div id="quiz-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-lg w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden">
+      <div class="p-5 border-b border-slate-800 flex justify-between items-center">
+        <h3 class="text-lg font-bold text-white">🧭 Где мне расти?</h3>
+        <button onclick="closeQuiz()" class="text-slate-400 hover:text-white p-2 rounded-lg bg-slate-800">✕</button>
+      </div>
+      <div class="p-5 overflow-y-auto" id="quiz-body"></div>
+    </div>
+  </div>
+
+  <!-- Мобильная навигация -->
+  <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-slate-900/95 backdrop-blur-md border-t border-slate-800 z-40 px-2 py-2 flex justify-around">
+    <button onclick="switchTab('profile')" id="mob-nav-profile" class="mob-btn flex flex-col items-center gap-1 p-2 rounded-xl text-slate-400 text-[10px]"><i data-lucide="user" class="w-5 h-5"></i> Профиль</button>
+    <button onclick="switchTab('body')" id="mob-nav-body" class="mob-btn flex flex-col items-center gap-1 p-2 rounded-xl text-slate-400 text-[10px]"><i data-lucide="dumbbell" class="w-5 h-5"></i> Body</button>
+    <button onclick="switchTab('mind')" id="mob-nav-mind" class="mob-btn flex flex-col items-center gap-1 p-2 rounded-xl text-slate-400 text-[10px]"><i data-lucide="brain" class="w-5 h-5"></i> Mind</button>
+    <button onclick="switchTab('focus')" id="mob-nav-focus" class="mob-btn flex flex-col items-center gap-1 p-2 rounded-xl text-slate-400 text-[10px]"><i data-lucide="target" class="w-5 h-5"></i> Focus</button>
+    <button onclick="switchTab('style')" id="mob-nav-style" class="mob-btn flex flex-col items-center gap-1 p-2 rounded-xl text-slate-400 text-[10px]"><i data-lucide="sparkles" class="w-5 h-5"></i> Style</button>
+  </nav>
+
+  <script>
+    const LEVELS = [
+      { level: 1, title: "Novice", rank: "Ранг I", rankTitle: "Начало пути", xp: 0 },
+      { level: 2, title: "Starter", rank: "Ранг I", rankTitle: "Начало пути", xp: 100 },
+      { level: 3, title: "Explorer", rank: "Ранг I", rankTitle: "Начало пути", xp: 250 },
+      { level: 4, title: "Spark", rank: "Ранг I", rankTitle: "Начало пути", xp: 450 },
+      { level: 5, title: "Awakened", rank: "Ранг I", rankTitle: "Начало пути", xp: 700 },
+      { level: 6, title: "Runner", rank: "Ранг II", rankTitle: "Формирование привычек", xp: 1000 },
+      { level: 7, title: "Momentum", rank: "Ранг II", rankTitle: "Формирование привычек", xp: 1350 },
+      { level: 8, title: "Builder", rank: "Ранг II", rankTitle: "Формирование привычек", xp: 1750 },
+      { level: 9, title: "Focused", rank: "Ранг II", rankTitle: "Формирование привычек", xp: 2200 },
+      { level: 10, title: "Self-Made", rank: "Ранг II", rankTitle: "Формирование привычек", xp: 2700 },
+      { level: 11, title: "Iron Will", rank: "Ранг III", rankTitle: "Заметный прогресс", xp: 3300 },
+      { level: 12, title: "Disciplined", rank: "Ранг III", rankTitle: "Заметный прогресс", xp: 4000 },
+      { level: 13, title: "High Performer", rank: "Ранг III", rankTitle: "Заметный прогресс", xp: 4800 },
+      { level: 14, title: "Pathfinder", rank: "Ранг III", rankTitle: "Заметный прогресс", xp: 5700 },
+      { level: 15, title: "Transformer", rank: "Ранг III", rankTitle: "Заметный прогресс", xp: 6700 },
+      { level: 16, title: "Prime", rank: "Ранг IV", rankTitle: "Уверенный результат", xp: 7800 },
+      { level: 17, title: "Peak Form", rank: "Ранг IV", rankTitle: "Уверенный результат", xp: 9000 },
+      { level: 18, title: "Unstoppable", rank: "Ранг IV", rankTitle: "Уверенный результат", xp: 10300 },
+      { level: 19, title: "Vanguard", rank: "Ранг IV", rankTitle: "Уверенный результат", xp: 11700 },
+      { level: 20, title: "Glow Up Pro", rank: "Ранг IV", rankTitle: "Уверенный результат", xp: 13200 },
+      { level: 21, title: "Elite", rank: "Ранг V", rankTitle: "Легенда дисциплины", xp: 15000 },
+      { level: 22, title: "Dominant", rank: "Ранг V", rankTitle: "Легенда дисциплины", xp: 17000 },
+      { level: 23, title: "Icon", rank: "Ранг V", rankTitle: "Легенда дисциплины", xp: 19200 },
+      { level: 24, title: "Mastermind", rank: "Ранг V", rankTitle: "Легенда дисциплины", xp: 21600 },
+      { level: 25, title: "Glow Up Legend", rank: "Ранг V", rankTitle: "Легенда дисциплины", xp: 25000 }
+    ];
+
+    const QUESTS = [
+      // BODY
+      { id: 'b1', category: 'body', title: '5 минут разминки для осанки', desc: 'Кошка-корова и ангелы у стены', xp: 25 },
+      { id: 'b2', category: 'body', title: 'Выпить воды в течение дня', desc: 'Стакан утром + бутылка с собой в школу', xp: 15 },
+      { id: 'b3', category: 'body', title: 'Прогулка 20–30 минут', desc: 'Свежий воздух без телефона в руках', xp: 25 },
+      { id: 'b4', category: 'body', title: 'Домашний комплекс', desc: 'Отжимания, приседания, планка', xp: 30 },
+      { id: 'b5', category: 'body', title: 'Растяжка перед сном', desc: '5 минут мягкой растяжки', xp: 15 },
+      { id: 'b6', category: 'body', title: 'Съесть фрукт или овощи', desc: 'Добавь в день что-то свежее', xp: 10 },
+      // MIND
+      { id: 'm1', category: 'mind', title: 'Отложить телефон за 45 мин до сна', desc: 'Вместо ленты — книга или тишина', xp: 30 },
+      { id: 'm2', category: 'mind', title: 'Практика ровной осанки при ходьбе', desc: 'Подбородок параллельно полу', xp: 15 },
+      { id: 'm3', category: 'mind', title: 'Благодарность: 3 вещи', desc: 'Запиши, за что ты благодарен сегодня', xp: 20 },
+      { id: 'm4', category: 'mind', title: 'Brain Dump', desc: 'Выпиши все тревожные мысли на бумагу', xp: 20 },
+      { id: 'm5', category: 'mind', title: '1 час без соцсетей', desc: 'Режим «Не беспокоить» на час', xp: 25 },
+      { id: 'm6', category: 'mind', title: 'Лечь спать вовремя', desc: 'Сон 8+ часов, в одно и то же время', xp: 30 },
+      // FOCUS
+      { id: 'f1', category: 'focus', title: '25 минут учебы по Pomodoro', desc: 'Полный фокус на одной задаче', xp: 25 },
+      { id: 'f2', category: 'focus', title: 'Прочитать 15 страниц книги', desc: 'Художественная или нон-фикшн', xp: 20 },
+      { id: 'f3', category: 'focus', title: 'Выучить 5 новых слов', desc: 'Иностранный язык или термины по предмету', xp: 20 },
+      { id: 'f4', category: 'focus', title: 'Выбрать 3 главные задачи на завтра', desc: 'Запиши их вечером', xp: 15 },
+      { id: 'f5', category: 'focus', title: 'Объяснить тему по методу Фейнмана', desc: 'Расскажи тему простыми словами', xp: 25 },
+      { id: 'f6', category: 'focus', title: 'Сделать домашку до вечера', desc: 'Начни с самого сложного предмета', xp: 25 },
+      // STYLE
+      { id: 's1', category: 'style', title: 'Вечерний уход за кожей', desc: 'Умывание + увлажняющий крем', xp: 15 },
+      { id: 's2', category: 'style', title: 'Подготовить вещи с вечера', desc: 'Одежда и рюкзак на завтра', xp: 15 },
+      { id: 's3', category: 'style', title: 'Утренний уход за кожей', desc: 'Умывание + крем', xp: 15 },
+      { id: 's4', category: 'style', title: 'Почистить зубы утром и вечером', desc: 'Плюс зубная нить раз в день', xp: 15 },
+      { id: 's5', category: 'style', title: 'Протереть обувь', desc: 'Чистые кроссовки меняют общий вид', xp: 10 },
+      { id: 's6', category: 'style', title: 'Чистая одежда и свежие носки', desc: 'Опрятный вид с самого утра', xp: 10 }
+    ];
+
+    const POMO_XP = 10;
+    const POMO_MAX_PER_DAY = 4;
+
+    let state = { xp: 0, completed: {}, pomo: {} };
+
+    function dateKey(d = new Date()) {
+      return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+    }
+
+    // Серия: подряд идущие дни, в которые выполнен хотя бы один квест
+    function calcStreak() {
+      let s = 0;
+      const d = new Date();
+      const has = k => (state.completed[k] && Object.keys(state.completed[k]).length > 0) || (state.pomo[k] > 0);
+      if (!has(dateKey(d))) d.setDate(d.getDate() - 1);
+      while (has(dateKey(d))) { s++; d.setDate(d.getDate() - 1); }
+      return s;
+    }
+
+    function loadState() {
+      try {
+        const saved = localStorage.getItem('glowup_state_v2');
+        if (saved) {
+          const p = JSON.parse(saved);
+          state = { xp: p.xp || 0, completed: p.completed || {}, pomo: p.pomo || {} };
+        }
+      } catch (e) {}
+      updateUI();
+    }
+
+    function saveState() {
+      try { localStorage.setItem('glowup_state_v2', JSON.stringify(state)); } catch (e) {}
+      updateUI();
+    }
+
+    function getCurrentLevelData(xp) {
+      let current = LEVELS[0];
+      let next = LEVELS[1];
+      for (let i = LEVELS.length - 1; i >= 0; i--) {
+        if (xp >= LEVELS[i].xp) {
+          current = LEVELS[i];
+          next = LEVELS[i + 1] || LEVELS[i];
+          break;
+        }
+      }
+      return { current, next };
+    }
+
+    function updateUI() {
+      const { current, next } = getCurrentLevelData(state.xp);
+      const streak = calcStreak();
+
+      document.getElementById('header-xp').textContent = state.xp;
+      document.getElementById('header-streak').textContent = streak;
+
+      document.getElementById('user-level-num').textContent = current.level;
+      document.getElementById('user-title').textContent = current.title;
+      document.getElementById('user-rank-badge').textContent = current.rank;
+      document.getElementById('user-rank-title').textContent = current.rankTitle;
+      document.getElementById('profile-streak').textContent = `${streak} дн.`;
+
+      document.getElementById('user-current-xp').textContent = state.xp;
+      document.getElementById('user-next-xp').textContent = next.xp;
+      document.getElementById('next-level-num').textContent = next.level;
+      document.getElementById('total-xp-earned').textContent = `${state.xp} XP`;
+
+      let progressPercent = 100;
+      let xpNeeded = 0;
+      if (current.level !== next.level) {
+        const range = next.xp - current.xp;
+        const earnedInRange = state.xp - current.xp;
+        progressPercent = Math.min(100, Math.max(0, Math.round((earnedInRange / range) * 100)));
+        xpNeeded = next.xp - state.xp;
+      }
+      document.getElementById('xp-percentage').textContent = `${progressPercent}%`;
+      document.getElementById('xp-progress-bar').style.width = `${progressPercent}%`;
+      document.getElementById('xp-needed').textContent = `${xpNeeded} XP`;
+
+      const doneToday = Object.keys(state.completed[dateKey()] || {}).length;
+      document.getElementById('today-count').textContent = `${doneToday} / ${QUESTS.length}`;
+      document.getElementById('pomo-count').textContent = `${state.pomo[dateKey()] || 0} / ${POMO_MAX_PER_DAY}`;
+
+      renderQuests();
+    }
+
+    let currentCategoryFilter = 'all';
+
+    function renderQuests() {
+      const container = document.getElementById('quests-container');
+      if (!container) return;
+      container.innerHTML = '';
+
+      const todayDone = state.completed[dateKey()] || {};
+      const filtered = QUESTS.filter(q => currentCategoryFilter === 'all' || q.category === currentCategoryFilter);
+
+      filtered.forEach(quest => {
+        const isDone = !!todayDone[quest.id];
+
+        const card = document.createElement('div');
+        card.className = `p-4 rounded-2xl border transition-all flex items-start justify-between gap-3 ${
+          isDone
+            ? 'bg-emerald-950/20 border-emerald-500/30 text-slate-400'
+            : 'bg-slate-900/80 border-slate-800 hover:border-slate-700 text-white'
+        }`;
+
+        card.innerHTML = `
+          <div class="flex items-start gap-3.5">
+            <button onclick="toggleQuest('${quest.id}')" class="mt-0.5 w-6 h-6 shrink-0 rounded-lg border flex items-center justify-center transition-all ${
+              isDone ? 'bg-brand-500 border-brand-500 text-slate-950 font-bold' : 'border-slate-700 hover:border-brand-500'
+            }">${isDone ? '✓' : ''}</button>
+            <div>
+              <div class="flex flex-wrap items-center gap-2">
+                <h4 class="text-sm font-bold ${isDone ? 'line-through text-slate-400' : 'text-white'}">${quest.title}</h4>
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                  quest.category === 'body' ? 'bg-emerald-500/10 text-emerald-400' :
+                  quest.category === 'mind' ? 'bg-purple-500/10 text-purple-400' :
+                  quest.category === 'focus' ? 'bg-blue-500/10 text-blue-400' : 'bg-amber-500/10 text-amber-400'
+                }">${quest.category.toUpperCase()}</span>
+              </div>
+              <p class="text-xs text-slate-400 mt-1">${quest.desc}</p>
+            </div>
+          </div>
+          <span class="text-xs font-bold text-brand-400 bg-brand-500/10 px-2.5 py-1 rounded-lg shrink-0">+${quest.xp} XP</span>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function toggleQuest(id) {
+      const quest = QUESTS.find(q => q.id === id);
+      if (!quest) return;
+      const k = dateKey();
+      state.completed[k] = state.completed[k] || {};
+      if (state.completed[k][id]) {
+        delete state.completed[k][id];
+        state.xp = Math.max(0, state.xp - quest.xp);
+      } else {
+        state.completed[k][id] = true;
+        state.xp += quest.xp;
+      }
+      saveState();
+    }
+
+    function filterQuests(category) {
+      currentCategoryFilter = category;
+      document.querySelectorAll('.quest-filter-btn').forEach(btn => {
+        btn.className = btn.dataset.category === category
+          ? 'quest-filter-btn px-3 py-1.5 rounded-lg font-medium transition-all bg-brand-500 text-slate-950 font-semibold'
+          : 'quest-filter-btn px-3 py-1.5 rounded-lg font-medium text-slate-400 hover:text-white transition-all';
+      });
+      renderQuests();
+    }
+
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(tab => tab.classList.add('hidden'));
+      const target = document.getElementById(`tab-${tabId}`);
+      if (target) target.classList.remove('hidden');
+
+      document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.classList.remove('bg-brand-500', 'text-slate-950', 'font-bold');
+        btn.classList.add('text-slate-400');
+      });
+      const activeDesktopNav = document.getElementById(`nav-${tabId}`);
+      if (activeDesktopNav) {
+        activeDesktopNav.classList.add('bg-brand-500', 'text-slate-950', 'font-bold');
+        activeDesktopNav.classList.remove('text-slate-400');
+      }
+
+      document.querySelectorAll('.mob-btn').forEach(btn => {
+        btn.classList.remove('text-brand-500', 'font-bold');
+        btn.classList.add('text-slate-400');
+      });
+      const activeMobNav = document.getElementById(`mob-nav-${tabId}`);
+      if (activeMobNav) {
+        activeMobNav.classList.add('text-brand-500', 'font-bold');
+        activeMobNav.classList.remove('text-slate-400');
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function openLevelsModal() {
+      const container = document.getElementById('modal-levels-list');
+      if (!container) return;
+      container.innerHTML = '';
+      const currentLevel = getCurrentLevelData(state.xp).current.level;
+
+      LEVELS.forEach(lvl => {
+        const isCurrent = lvl.level === currentLevel;
+        const isReached = state.xp >= lvl.xp;
+
+        const row = document.createElement('div');
+        row.className = `p-3.5 rounded-xl border flex items-center justify-between ${
+          isCurrent
+            ? 'bg-brand-500/10 border-brand-500 text-white font-bold'
+            : isReached
+            ? 'bg-slate-950/60 border-slate-800 text-slate-300'
+            : 'bg-slate-950/20 border-slate-800/40 text-slate-500'
+        }`;
+
+        row.innerHTML = `
+          <div class="flex items-center gap-3">
+            <span class="w-8 h-8 rounded-lg ${isCurrent ? 'bg-brand-500 text-slate-950' : 'bg-slate-800 text-slate-300'} flex items-center justify-center font-bold text-xs">${lvl.level}</span>
+            <div>
+              <div class="text-sm font-bold text-white flex items-center gap-2">
+                ${lvl.title} ${isCurrent ? '<span class="text-[10px] bg-brand-500 text-slate-950 px-2 py-0.5 rounded-full">ТЕКУЩИЙ</span>' : ''}
+              </div>
+              <div class="text-[11px] text-slate-400">${lvl.rank} • ${lvl.rankTitle}</div>
+            </div>
+          </div>
+          <span class="text-xs font-mono font-semibold text-slate-400">${lvl.xp} XP</span>
+        `;
+        container.appendChild(row);
+      });
+
+      document.getElementById('levels-modal').classList.remove('hidden');
+    }
+
+    function closeLevelsModal() {
+      document.getElementById('levels-modal').classList.add('hidden');
+    }
+
+    // ---------- Тест «Где мне расти?» ----------
+    const QUIZ_CATS = {
+      body:  { name: 'Body',  emoji: '💪', bar: 'bg-emerald-500', tips: 'Начни с малого: 5 минут разминки для осанки, воду в течение дня и прогулку 20–30 минут. Регулярность важнее нагрузки.' },
+      mind:  { name: 'Mind',  emoji: '🧠', bar: 'bg-purple-500',  tips: 'Главное тут сон и спокойствие: отложи телефон за 45 минут до сна, ложись в одно время и попробуй Brain Dump или запись благодарностей.' },
+      focus: { name: 'Focus', emoji: '🎯', bar: 'bg-blue-500',    tips: 'Попробуй Pomodoro: 25 минут без телефона. И каждый вечер записывай 3 главные задачи на завтра.' },
+      style: { name: 'Style', emoji: '✨', bar: 'bg-amber-500',   tips: 'Базовый уход: умывание утром и вечером, чистые вещи и обувь, подготовка одежды с вечера. Мелочи дают много уверенности.' }
+    };
+
+    const QUIZ_QUESTIONS = [
+      { cat: 'body',  q: 'Я двигаюсь (спорт, прогулки, активные игры) около часа в день.' },
+      { cat: 'mind',  q: 'Я ложусь спать вовремя и высыпаюсь.' },
+      { cat: 'focus', q: 'Я могу 25 минут заниматься без отвлечения на телефон.' },
+      { cat: 'style', q: 'Я каждый день слежу за гигиеной и уходом за кожей.' },
+      { cat: 'body',  q: 'Я пью воду в течение дня, а не только когда очень хочется пить.' },
+      { cat: 'mind',  q: 'Я могу спокойно справляться со стрессом и тревожными мыслями.' },
+      { cat: 'focus', q: 'Я заранее планирую дела и учёбу на день.' },
+      { cat: 'style', q: 'Я чувствую себя опрятно и уверенно в своём внешнем виде.' }
+    ];
+
+    const QUIZ_ANSWERS = ['Почти никогда', 'Иногда', 'Часто', 'Почти всегда'];
+
+    let quizIndex = 0;
+    let quizScores = { body: 0, mind: 0, focus: 0, style: 0 };
+
+    function openQuiz() {
+      quizIndex = 0;
+      quizScores = { body: 0, mind: 0, focus: 0, style: 0 };
+      renderQuizQuestion();
+      document.getElementById('quiz-modal').classList.remove('hidden');
+    }
+
+    function closeQuiz() {
+      document.getElementById('quiz-modal').classList.add('hidden');
+    }
+
+    function renderQuizQuestion() {
+      const item = QUIZ_QUESTIONS[quizIndex];
+      const pct = Math.round((quizIndex / QUIZ_QUESTIONS.length) * 100);
+      document.getElementById('quiz-body').innerHTML = `
+        <div class="flex justify-between text-xs text-slate-400 mb-2">
+          <span>Вопрос ${quizIndex + 1} из ${QUIZ_QUESTIONS.length}</span><span>${pct}%</span>
+        </div>
+        <div class="w-full h-2 bg-slate-800 rounded-full overflow-hidden mb-5">
+          <div class="h-full bg-indigo-500 rounded-full transition-all" style="width:${pct}%"></div>
+        </div>
+        <p class="text-base font-semibold text-white mb-4">${item.q}</p>
+        <div class="space-y-2">
+          ${QUIZ_ANSWERS.map((a, i) => `
+            <button onclick="answerQuiz(${i})" class="w-full text-left px-4 py-3 rounded-xl border border-slate-700 bg-slate-950/50 hover:border-indigo-400 hover:bg-indigo-500/10 text-sm text-slate-200 transition-all">${a}</button>
+          `).join('')}
+        </div>
+      `;
+    }
+
+    function answerQuiz(value) {
+      quizScores[QUIZ_QUESTIONS[quizIndex].cat] += value;
+      quizIndex++;
+      if (quizIndex < QUIZ_QUESTIONS.length) {
+        renderQuizQuestion();
+      } else {
+        finishQuiz();
+      }
+    }
+
+    function finishQuiz() {
+      const maxPerCat = 6; // 2 вопроса по 3 балла
+      const cats = Object.keys(QUIZ_CATS);
+      let weakest = cats[0];
+      cats.forEach(c => { if (quizScores[c] < quizScores[weakest]) weakest = c; });
+
+      try {
+        localStorage.setItem('glowup_quiz', JSON.stringify({ scores: quizScores, weakest, date: dateKey() }));
+      } catch (e) {}
+      updateQuizLast();
+
+      const info = QUIZ_CATS[weakest];
+      document.getElementById('quiz-body').innerHTML = `
+        <div class="text-center mb-5">
+          <div class="text-4xl mb-2">${info.emoji}</div>
+          <p class="text-xs text-slate-400">Твоя главная зона роста</p>
+          <h4 class="text-2xl font-extrabold text-white">${info.name}</h4>
+        </div>
+        <div class="space-y-3 mb-5">
+          ${cats.map(c => {
+            const p = Math.round((quizScores[c] / maxPerCat) * 100);
+            return `
+              <div>
+                <div class="flex justify-between text-xs mb-1 ${c === weakest ? 'text-white font-bold' : 'text-slate-400'}">
+                  <span>${QUIZ_CATS[c].emoji} ${QUIZ_CATS[c].name}</span><span>${p}%</span>
+                </div>
+                <div class="w-full h-2.5 bg-slate-800 rounded-full overflow-hidden">
+                  <div class="h-full ${QUIZ_CATS[c].bar} rounded-full" style="width:${p}%"></div>
+                </div>
+              </div>`;
+          }).join('')}
+        </div>
+        <p class="text-sm text-slate-300 bg-slate-950/50 border border-slate-800 rounded-xl p-3 mb-4">${info.tips}</p>
+        <div class="flex flex-col sm:flex-row gap-2">
+          <button onclick="quizShowQuests('${weakest}')" class="flex-1 bg-brand-500 hover:bg-brand-600 text-slate-950 font-bold px-4 py-2.5 rounded-xl text-sm">Показать квесты ${info.name}</button>
+          <button onclick="openQuiz()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-4 py-2.5 rounded-xl text-sm border border-slate-700">Пройти снова</button>
+        </div>
+        <p class="text-[11px] text-slate-500 mt-3">Тест — это не диагноз, а подсказка, с чего начать. Высокий балл не значит, что остальное «плохо».</p>
+      `;
+    }
+
+    function quizShowQuests(cat) {
+      closeQuiz();
+      switchTab('profile');
+      filterQuests(cat);
+    }
+
+    function updateQuizLast() {
+      const el = document.getElementById('quiz-last');
+      if (!el) return;
+      try {
+        const saved = JSON.parse(localStorage.getItem('glowup_quiz') || 'null');
+        el.textContent = saved ? `Последний результат: ${QUIZ_CATS[saved.weakest].name} (${saved.date})` : '';
+      } catch (e) { el.textContent = ''; }
+    }
+
+    // ---------- Pomodoro ----------
+    let timerInterval = null;
+    let timerMinutes = 25;
+    let timerSeconds = 25 * 60;
+
+    function updateTimerDisplay() {
+      const mins = Math.floor(timerSeconds / 60);
+      const secs = timerSeconds % 60;
+      document.getElementById('timer-display').textContent =
+        `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+    }
+
+    function startTimer() {
+      if (timerInterval) return;
+      document.getElementById('btn-timer-start').classList.add('hidden');
+      document.getElementById('btn-timer-pause').classList.remove('hidden');
+
+      timerInterval = setInterval(() => {
+        if (timerSeconds > 0) {
+          timerSeconds--;
+          updateTimerDisplay();
+        } else {
+          finishTimer();
+        }
+      }, 1000);
+    }
+
+    function finishTimer() {
+      pauseTimer();
+      if (timerMinutes === 25) {
+        const k = dateKey();
+        const done = state.pomo[k] || 0;
+        if (done < POMO_MAX_PER_DAY) {
+          state.pomo[k] = done + 1;
+          state.xp += POMO_XP;
+          saveState();
+          alert(`⏰ Время вышло! +${POMO_XP} XP. Сделай перерыв 5 минут.`);
+        } else {
+          alert('⏰ Время вышло! На сегодня лимит XP за Pomodoro уже набран, но так держать!');
+        }
+      } else {
+        alert('⏰ Отдых закончился. Возвращайся к делу!');
+      }
+      resetTimer(timerMinutes);
+    }
+
+    function pauseTimer() {
+      clearInterval(timerInterval);
+      timerInterval = null;
+      document.getElementById('btn-timer-start').classList.remove('hidden');
+      document.getElementById('btn-timer-pause').classList.add('hidden');
+    }
+
+    function resetTimer(minutes) {
+      pauseTimer();
+      timerMinutes = minutes;
+      timerSeconds = minutes * 60;
+      document.getElementById('timer-mode-label').textContent = minutes === 25 ? 'Сфокусируйся на учебе' : 'Время отдохнуть';
+      updateTimerDisplay();
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      if (window.lucide) lucide.createIcons();
+      loadState();
+      updateQuizLast();
+      switchTab('profile');
+    });
+  </script>
+</body>
+</html>
